@@ -180,6 +180,26 @@ class Stripe {
     )
     return StripeModule.createSourceWithParams(params)
   }
+
+  initCustomerSession = (params = {}) => {
+    checkInit(this)
+    return StripeModule.initCustomerSession(params)
+  }
+
+  endCustomerSession = () => {
+    checkInit(this)
+    return StripeModule.endCustomerSession()
+  }
+
+  fetchCustomerSources = () => {
+    checkInit(this)
+    return StripeModule.fetchCustomerSources()
+  }
+
+  setDefaultSource = (params = {}) => {
+    checkInit(this)
+    return StripeModule.setDefaultSource(params)
+  }
 }
 
 export default new Stripe()
