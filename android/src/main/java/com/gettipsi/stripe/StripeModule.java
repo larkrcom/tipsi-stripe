@@ -229,6 +229,29 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void addCustomerSource(final ReadableMap data, final Promise promise) {
+        Activity activity = getCurrentActivity();
+
+        CustomerSession.SourceRetrievalListener listener =
+                new CustomerSession.SourceRetrievalListener() {
+                    @Override
+                    public void onSourceRetrieved(@NonNull Source source) {
+                        promise.resolve(source.toString());
+                    }
+
+                    @Override
+                    public void onError(int errorCode, @Nullable String errorMessage) {
+                        String displayedError = errorMessage == null ? "" : errorMessage;
+                        promise.reject(String.valueOf(errorCode), displayedError);
+                    }
+                };
+
+        String sourceId = data.getString("sourceId");
+        String sourceType = data.getString("sourceType");
+        CustomerSession.getInstance().addCustomerSource(activity, sourceId, sourceType, listener);
+    }
+
+    @ReactMethod
     public void endCustomerSession(final Promise promise) {
         CustomerSession.endCustomerSession();
         promise.resolve("ok");
@@ -284,6 +307,22 @@ public class StripeModule extends ReactContextBaseJavaModule {
         String sourceType = options.getString("type");
         SourceParams sourceParams = null;
         switch (sourceType) {
+            case "card":
+                String cardNumber = options.getString("number");
+                int month = options.getInt("expMonth");
+                int year = options.getInt("expYear");
+                String cvc = options.getString("cvc");
+
+                Boolean shouldAddZip = options.getBoolean("shouldAddZip");
+                Card card = new Card(cardNumber, month, year, cvc);
+
+                if (shouldAddZip) {
+                    String zip = options.getString("zip");
+                    card.setAddressZip(zip);
+                }
+
+                sourceParams = SourceParams.createCardParams(card);
+                break;
             case "alipay":
                 sourceParams = SourceParams.createAlipaySingleUseParams(
                         options.getInt("amount"),
