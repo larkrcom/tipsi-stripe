@@ -311,15 +311,17 @@ public class StripeModule extends ReactContextBaseJavaModule {
                 String cardNumber = options.getString("number");
                 int month = options.getInt("expMonth");
                 int year = options.getInt("expYear");
+
                 String cvc = options.getString("cvc");
 
-                Boolean shouldAddZip = options.getBoolean("shouldAddZip");
                 Card card = new Card(cardNumber, month, year, cvc);
-
-                if (shouldAddZip) {
-                    String zip = options.getString("zip");
-                    card.setAddressZip(zip);
-                }
+                card.setName("name");
+                card.setAddressLine1(options.getString("addressLine1"));
+                card.setAddressLine2(options.getString("addressLine2"));
+                card.setAddressCity(options.getString("addressCity"));
+                card.setAddressState(options.getString("addressState"));
+                card.setAddressCountry(options.getString("addressCountry"));
+                card.setAddressZip(options.getString("addressZip"));
 
                 sourceParams = SourceParams.createCardParams(card);
                 break;
