@@ -17,6 +17,7 @@ export const availableSourceTypes = [
   'sofort',
   'threeDSecure',
   'alipay',
+  'card',
 ]
 
 export const setOptionsOptionsPropTypes = {
