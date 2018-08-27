@@ -200,6 +200,11 @@ class Stripe {
     checkInit(this)
     return StripeModule.setDefaultSource(params)
   }
+
+  addCustomerSource = (params = {}) => {
+    checkInit(this)
+    return StripeModule.addCustomerSource(params)
+  }
 }
 
 export default new Stripe()
