@@ -104,6 +104,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
             mPublicKey = newPubKey;
             mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
             getPayFlow().setPublishableKey(mPublicKey);
+            PaymentConfiguration.init(mPublicKey);
         }
 
         if (newAndroidPayMode != null) {
