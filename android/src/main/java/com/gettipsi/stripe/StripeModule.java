@@ -301,7 +301,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
                 };
 
         String sourceId = data.getString("sourceId");
-        CustomerSession.getInstance().deleteCustomerSource(activity, sourceId, listener)
+        CustomerSession.getInstance().deleteCustomerSource(activity, sourceId, listener);
     }
 
     @ReactMethod
