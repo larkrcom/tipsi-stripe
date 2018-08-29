@@ -205,6 +205,11 @@ class Stripe {
     checkInit(this)
     return StripeModule.addCustomerSource(params)
   }
+
+  deleteCustomerSource = (params = {}) => {
+    checkInit(this)
+    return StripeModule.deleteCustomerSource(params)
+  }
 }
 
 export default new Stripe()

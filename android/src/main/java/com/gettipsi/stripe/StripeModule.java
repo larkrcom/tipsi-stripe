@@ -236,7 +236,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
                 new CustomerSession.SourceRetrievalListener() {
                     @Override
                     public void onSourceRetrieved(@NonNull Source source) {
-                        promise.resolve(source.toString());
+                        promise.resolve(convertSourceToWritableMap(source));
                     }
 
                     @Override
@@ -280,6 +280,28 @@ public class StripeModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(TAG, e.getMessage());
         }
+    }
+
+    @ReactMethod
+    public void deleteCustomerSource(final ReadableMap data, final Promise promise) {
+        Activity activity = getCurrentActivity();
+
+        CustomerSession.SourceRetrievalListener listener =
+                new CustomerSession.SourceRetrievalListener() {
+                    @Override
+                    public void onSourceRetrieved(@NonNull Source source) {
+                        promise.resolve(convertSourceToWritableMap(source));
+                    }
+
+                    @Override
+                    public void onError(int errorCode, @Nullable String errorMessage) {
+                        String displayedError = errorMessage == null ? "" : errorMessage;
+                        promise.reject(String.valueOf(errorCode), displayedError);
+                    }
+                };
+
+        String sourceId = data.getString("sourceId");
+        CustomerSession.getInstance().deleteCustomerSource(activity, sourceId, listener)
     }
 
     @ReactMethod
