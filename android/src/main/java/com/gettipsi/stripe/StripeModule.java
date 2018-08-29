@@ -203,7 +203,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setDefaultSources(final ReadableMap data, final Promise promise) {
+    public void setDefaultSource(final ReadableMap data, final Promise promise) {
         Activity currentActivity = getCurrentActivity();
 
         CustomerSession.CustomerRetrievalListener listener =
