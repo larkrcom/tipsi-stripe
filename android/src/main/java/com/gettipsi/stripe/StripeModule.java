@@ -338,7 +338,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
                 String cvc = options.getString("cvc");
 
                 Card card = new Card(cardNumber, month, year, cvc);
-                card.setName("name");
+                card.setName(options.getString("name"));
                 card.setAddressLine1(options.getString("addressLine1"));
                 card.setAddressLine2(options.getString("addressLine2"));
                 card.setAddressCity(options.getString("addressCity"));
