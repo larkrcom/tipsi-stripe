@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -19,6 +20,7 @@ import com.gettipsi.stripe.dialog.AddCardDialogFragment;
 import com.gettipsi.stripe.util.ArgCheck;
 import com.gettipsi.stripe.util.Converters;
 import com.gettipsi.stripe.util.Fun0;
+import com.gettipsi.stripe.util.Utils;
 import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.*;
 import com.stripe.android.model.*;
@@ -64,6 +66,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
     private Stripe mStripe;
     private PayFlow mPayFlow;
 
+    private String ephemeralKeyEndpoint;
 
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
 
@@ -97,6 +100,8 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
         String newPubKey = Converters.getStringOrNull(options, PUBLISHABLE_KEY);
         String newAndroidPayMode = Converters.getStringOrNull(options, ANDROID_PAY_MODE_KEY);
+
+        ephemeralKeyEndpoint = options.getString("ephemeralKeyEndpoint");
 
         if (newPubKey != null && !TextUtils.equals(newPubKey, mPublicKey)) {
             ArgCheck.notEmptyString(newPubKey);
@@ -168,20 +173,14 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initCustomerSession(final ReadableMap data, final Promise promise) {
-        CustomerSession.initCustomerSession(new EphemeralKeyProvider() {
-            @Override
-            public void createEphemeralKey(@NonNull String apiVersion, @NonNull EphemeralKeyUpdateListener keyUpdateListener) {
-                String ephemeralKey = data.getString("ephemeralKey");
-
-                keyUpdateListener.onKeyUpdate(ephemeralKey);
-                promise.resolve("ok");
-            }
-        });
+    public void updateServerInfo(final ReadableMap data) {
+        CustomerSessionManager.getInstance().updateServerInfo(
+                data.getString("authToken"),
+                ephemeralKeyEndpoint);
     }
 
     @ReactMethod
-    public void fetchCustomerSources(final Promise promise) {
+    public void getCustomerSources(final Promise promise) {
         CustomerSession session = CustomerSession.getInstance();
         session.retrieveCurrentCustomer(new CustomerSession.CustomerRetrievalListener() {
             @Override
@@ -192,7 +191,13 @@ public class StripeModule extends ReactContextBaseJavaModule {
                 for (CustomerSource data : sources) {
                     array.put(data.toJson());
                 }
-                promise.resolve(array.toString());
+
+                try {
+                  promise.resolve(Utils.arrayToWritableMap(array));
+                } catch (Exception e) {
+                  promise.reject("EXCEPTION", "Failed parsing json data!");
+                  Log.e(getClass().getName(), "Failed parsing json array.", e);
+                }
             }
 
             @Override
@@ -253,9 +258,8 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void endCustomerSession(final Promise promise) {
-        CustomerSession.endCustomerSession();
-        promise.resolve("ok");
+    public void endCustomerSession() {
+        CustomerSessionManager.getInstance().endSession();
     }
 
     @ReactMethod
