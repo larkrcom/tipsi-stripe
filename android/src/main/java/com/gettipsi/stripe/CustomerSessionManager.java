@@ -85,11 +85,12 @@ public class CustomerSessionManager implements EphemeralKeyProvider {
   private static CustomerSessionManager instance;
 
   public static CustomerSessionManager getInstance() {
-    if (instance == null) {
+     if (instance == null) {
       instance = new CustomerSessionManager();
-      instance.initCustomerSession();
       return instance;
     }
+    if (instance.endpoint != null)
+       instance.initCustomerSession();
 
     return instance;
   }
