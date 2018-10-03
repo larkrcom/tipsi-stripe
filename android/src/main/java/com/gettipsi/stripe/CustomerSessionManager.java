@@ -72,6 +72,9 @@ public class CustomerSessionManager implements EphemeralKeyProvider {
       this.endpoint = endpoint;
     else
       throw new RuntimeException("Please add an endpoint for the EphemeralKey creation!");
+
+      if (endpoint != null)
+        initCustomerSession();
   }
 
   public void endSession() {
@@ -84,6 +87,7 @@ public class CustomerSessionManager implements EphemeralKeyProvider {
   public static CustomerSessionManager getInstance() {
     if (instance == null) {
       instance = new CustomerSessionManager();
+      instance.initCustomerSession();
       return instance;
     }
 
