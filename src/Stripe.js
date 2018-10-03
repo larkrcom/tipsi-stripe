@@ -197,7 +197,7 @@ class Stripe {
 
   fetchCustomerSources = () => {
     checkInit(this)
-    return StripeModule.fetchCustomerSources()
+    return StripeModule.getCustomerSources()
   }
 
   setDefaultSource = (params = {}) => {
