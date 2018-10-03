@@ -21,6 +21,7 @@ export const availableSourceTypes = [
 ]
 
 export const setOptionsOptionsPropTypes = {
+  ephemeralKeyEndpoint: PropTypes.string.isRequired,
   publishableKey: PropTypes.string,
   merchantId: PropTypes.string,
   androidPayMode: PropTypes.string,
@@ -153,4 +154,8 @@ export const createSourceWithParamsPropType = {
   postalCode: PropTypes.string,
   country: PropTypes.string,
   card: PropTypes.string,
+}
+
+export const accessTokenType = {
+  authToken: PropTypes.string.isRequired
 }

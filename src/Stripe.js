@@ -181,9 +181,13 @@ class Stripe {
     return StripeModule.createSourceWithParams(params)
   }
 
-  initCustomerSession = (params = {}) => {
+  updateAccessToken = (params = {}) => {
     checkInit(this)
-    return StripeModule.initCustomerSession(params)
+    checkArgs(
+      types.accessTokenType,
+      params, 'params', Stripe.updateAccessToken
+    )
+    return StripeModule.updateServerInfo(params)
   }
 
   endCustomerSession = () => {
