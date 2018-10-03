@@ -7,6 +7,7 @@ import com.stripe.android.CustomerSession;
 import com.stripe.android.EphemeralKeyProvider;
 import com.stripe.android.EphemeralKeyUpdateListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -31,6 +32,12 @@ public class CustomerSessionManager implements EphemeralKeyProvider {
   @Override
   public void createEphemeralKey(@NonNull String apiVersion, @NonNull final EphemeralKeyUpdateListener keyUpdateListener) {
     JSONObject json = new JSONObject();
+    try {
+      json.put("api_version", apiVersion);
+    } catch (JSONException e) {
+      // Never happens
+    }
+
     final Request.Builder request = new Request.Builder().url(endpoint)
       .post(RequestBody.create(MediaType.parse("application/json"), json.toString()));
 
